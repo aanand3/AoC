@@ -1,10 +1,9 @@
-
 Array.prototype.count = function (predicate) {
     return this.filter(predicate).length
 }
 
 RegExp.prototype.matchAllAsObject = function (str) {
-    const matches = [...this[Symbol.matchAll](str)]
+    const matches = [...str.matchAll(this)]
     return matches.reduce((acc, match) => ({ ...acc, [match[1]]: match[2] }), {})
 }
 
@@ -12,8 +11,8 @@ String.prototype.extractNumbers = function () {
     return Number(this.replaceAll(/[^0-9]/g, ''))
 }
 
-const inRange = function (number, beginInclusive, endInclusive) {
-    return beginInclusive <= Number(number) && Number(number) <= endInclusive
+const inRange = function (numberish, beginInclusive, endInclusive) {
+    return beginInclusive <= Number(numberish) && Number(numberish) <= endInclusive
 }
 
 const input = require('fs')
@@ -22,7 +21,7 @@ const input = require('fs')
     .split('\n\n');
 
 
-const extractRegExp = /([a-z]{3}):([^\s]+)/g
+const extractRegExp = /([a-z]{3}):(\S+)/g
 const passportData = input.map(record => extractRegExp.matchAllAsObject(record))
 
 const part1Result = passportData.count(({ ecl, pid, eyr, hcl, byr, iyr, hgt }) => ecl && pid && eyr && hcl && byr && iyr && hgt)
@@ -36,14 +35,12 @@ const part2Result = passportData.count(({ ecl, pid, eyr, hcl, byr, iyr, hgt }) =
 
     const eclValid = ['amb', 'blu', 'brn', 'gry', 'grn', 'hzl', 'oth'].includes(ecl)
 
-    const hclValid = /#[0-9a-f]{6}/.test(hcl)
+    const hclValid = /^#[0-9a-f]{6}$/.test(hcl)
 
-    const pidValid = /[0-9]{9}/.test(pid)
+    const pidValid = /^[0-9]{9}$/.test(pid)
 
     return byrValid && iyrValid && eyrValid && hgtValid && eclValid && hclValid && pidValid
 })
 
 console.log(part1Result)
 console.log(part2Result)
-
-// 138 - wrong, too high
