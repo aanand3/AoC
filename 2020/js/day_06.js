@@ -14,4 +14,11 @@ const part1Result =
         .map(s => Object.keys(s).length)
         .sum()
 
+const part2Result =
+    groups.map(s => s.split("\n").map(s => Array.from(s)))
+        .map(s => s.reduce((a, b) => a.filter(c => b.includes(c))))
+        .map(s => s.length)
+        .sum()
+
 console.log(part1Result);
+console.log(part2Result);
